@@ -307,20 +307,15 @@
         <div class="value">10</div>
         <div class="detail">แบ่งเป็น 2 มุมมอง</div>
       </div>
-      <div class="card partial">
-        <div class="label">ดำเนินการบางส่วน</div>
-        <div class="value">2</div>
-        <div class="detail">KPI 2, KPI 6 (33%)</div>
-      </div>
       <div class="card inprogress">
         <div class="label">กำลังดำเนินการ</div>
-        <div class="value">3</div>
-        <div class="detail">KPI 3, 4, 10</div>
+        <div class="value">6</div>
+        <div class="detail">KPI 1, 2, 3, 4, 6, 10</div>
       </div>
       <div class="card pending">
         <div class="label">รอดำเนินการ / รอผล</div>
-        <div class="value">5</div>
-        <div class="detail">KPI 1, 5, 7, 8, 9</div>
+        <div class="value">4</div>
+        <div class="detail">KPI 5, 7, 8, 9</div>
       </div>
     </div>
 
@@ -328,9 +323,8 @@
       <h3 style="font-size:16px;font-weight:700;color:#1f2937;margin-bottom:12px;">กรองตามสถานะ</h3>
       <div class="filter-bar" data-target="sujinda">
         <button class="filter-btn active" data-filter="all">ทั้งหมด (10)</button>
-        <button class="filter-btn" data-filter="partial">ดำเนินการบางส่วน (2)</button>
-        <button class="filter-btn" data-filter="inprogress">กำลังดำเนินการ (3)</button>
-        <button class="filter-btn" data-filter="pending">รอดำเนินการ/รอผล (5)</button>
+        <button class="filter-btn" data-filter="inprogress">กำลังดำเนินการ (6)</button>
+        <button class="filter-btn" data-filter="pending">รอดำเนินการ/รอผล (4)</button>
       </div>
     </div>
 
@@ -353,7 +347,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr data-status="pending">
+            <tr data-status="inprogress">
               <td><span class="kpi-no">1</span></td>
               <td>ร้อยละของจำนวนพนักงาน TRP &amp; Dealership (ผจก ศูนย์ ผจก ขาย ผจก หลังบ้าน) เข้ารับการอบรม หรือเรียน E-Learning ตาม Training Roadmap ผ่านตามเกณฑ์ที่กำหนด ระดับผู้จัดการส่วนขึ้นไป</td>
               <td>เฉลี่ยจำนวนพนักงานทั้งหมดได้รับการพัฒนา</td>
@@ -366,11 +360,11 @@
                 <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
               </td>
               <td>
-                <span class="status status-pending">รอดำเนินการ</span>
+                <span class="status status-inprogress">กำลังดำเนินการ</span>
                 <div class="result-text"><strong>0 คน</strong></div>
               </td>
             </tr>
-            <tr data-status="partial">
+            <tr data-status="inprogress">
               <td><span class="kpi-no">2</span></td>
               <td>ร้อยละการจัดพัฒนาตามแผนส่วนกลาง</td>
               <td>คะแนนเฉลี่ยประเมินความพึงพอใจรายหลักสูตร</td>
@@ -383,7 +377,7 @@
                 <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
               </td>
               <td>
-                <span class="status status-partial">33% ดำเนินการแล้ว</span>
+                <span class="status status-inprogress">กำลังดำเนินการ 33%</span>
                 <div class="result-text"><strong>จัดอบรมแล้ว:</strong>
 1. Notebook LM Canva
 2. หลักสูตรการบริหารความเสี่ยง (ผจก.ฝ่าย)
@@ -443,11 +437,11 @@
                 <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
               </td>
               <td>
-                <span class="status status-waiting">รอผล</span>
+                <span class="status status-waiting">รอดำเนินการ</span>
                 <div class="result-text">Follow Up เดือน <strong>ก.ค.</strong></div>
               </td>
             </tr>
-            <tr data-status="partial">
+            <tr data-status="inprogress">
               <td><span class="kpi-no">6</span></td>
               <td>ร้อยละการจัดกิจกรรมตามแผน และร้อยละพนักงานมีส่วนร่วมในกิจกรรมส่งเสริม Engagement และวัฒนธรรมองค์กร (ความพึงพอใจ)</td>
               <td>คะแนน 3 = แผน 100% + การมีส่วนร่วม ≥80%<br>คะแนน 4 = แผน 100% + การมีส่วนร่วม ≥85%<br>คะแนน 5 = แผน 100% + การมีส่วนร่วม ≥90%</td>
@@ -460,16 +454,16 @@
                 <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
               </td>
               <td>
-                <span class="status status-partial">33% ดำเนินการแล้ว</span>
-                <div class="result-text"><strong>ดำเนินการแล้ว:</strong>
+                <span class="status status-inprogress">กำลังดำเนินการ — จัดอบรมตามแผน 33%</span>
+                <div class="result-text"><strong>ดำเนินการจัดแล้ว:</strong>
 1. New Year Party
 2. Town hall (TRP &amp; Dealership)
 3. กิจกรรมบริจาคโลหิต ครั้งที่ 1
 
 <strong>รอดำเนินการตามแผน:</strong>
-4. ประกาศเกียรติคุณ 5 ปี ทุนบุตรพนักงาน
-5. ประกาศเกียรติคุณ อายุงาน 10 ปี
-6-8. กิจกรรมบริจาคโลหิตครั้งที่ 2
+4. ประกาศเกียรติคุณ 5 ปี ทุนบุตรพนักงาน (TRP&amp;TVP)
+5. ประกาศเกียรติคุณ อายุงาน 10 ปี (TRP&amp;TVP)
+6-8. กิจกรรมบริจาคโลหิต ครั้งที่ 2
 9. งานเกษียณอายุ
 
 <strong>ความพึงพอใจรวม: 91.93%</strong></div>
@@ -488,7 +482,7 @@
                 <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
               </td>
               <td>
-                <span class="status status-waiting">รอผล</span>
+                <span class="status status-waiting">รอดำเนินการ</span>
                 <div class="result-text">Test เดือน <strong>กรกฎาคม</strong></div>
               </td>
             </tr>
@@ -505,7 +499,7 @@
                 <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
               </td>
               <td>
-                <span class="status status-waiting">รอผล</span>
+                <span class="status status-waiting">รอดำเนินการ</span>
                 <div class="result-text">รอผล <strong>ธ.ค.</strong></div>
               </td>
             </tr>
@@ -522,7 +516,7 @@
                 <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
               </td>
               <td>
-                <span class="status status-waiting">รอผล</span>
+                <span class="status status-waiting">รอดำเนินการ</span>
                 <div class="result-text">รอผล <strong>ธ.ค.</strong></div>
               </td>
             </tr>
@@ -564,7 +558,7 @@
               </td>
               <td>
                 <span class="status status-inprogress">กำลังดำเนินการ</span>
-                <div class="result-text">อยู่ระหว่างการพัฒนา</div>
+                <div class="result-text">อยู่ระหว่างพัฒนางาน HRD ด้วย AI / Automation</div>
               </td>
             </tr>
           </tbody>
@@ -771,7 +765,7 @@
                 <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
               </td>
               <td>
-                <span class="status status-waiting">รอผล</span>
+                <span class="status status-waiting">รอดำเนินการ</span>
                 <div class="result-text">รอผล <strong>ธ.ค.</strong></div>
               </td>
             </tr>
