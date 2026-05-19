@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard สรุปการติดตามผลการดำเนินงาน KPI - สุจินดา ศรเกตุ</title>
+<title>Dashboard สรุปการติดตามผลการดำเนินงาน KPI</title>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -39,6 +39,49 @@
     backdrop-filter: blur(10px);
   }
 
+  /* Person tabs */
+  .person-tabs {
+    display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;
+    background: white;
+    padding: 12px;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  }
+  .person-tab {
+    flex: 1; min-width: 220px;
+    padding: 16px 20px;
+    border: 2px solid #e5e7eb;
+    background: #fafbfc;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    color: #4b5563;
+    transition: all 0.2s;
+    text-align: left;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .person-tab:hover { border-color: #1e3c72; color: #1e3c72; transform: translateY(-2px); }
+  .person-tab.active {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: white; border-color: #1e3c72;
+    box-shadow: 0 6px 16px rgba(30, 60, 114, 0.25);
+  }
+  .person-tab .avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: #e0e7ff;
+    color: #1e3c72;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .person-tab.active .avatar { background: rgba(255,255,255,0.2); color: white; }
+  .person-tab .info { display: flex; flex-direction: column; line-height: 1.2; }
+  .person-tab .name { font-size: 15px; font-weight: 700; }
+  .person-tab .role { font-size: 12px; opacity: 0.8; margin-top: 2px; font-weight: 500; }
+
   /* Summary Cards */
   .summary-grid {
     display: grid;
@@ -67,26 +110,8 @@
   .card.partial .value { color: #8b5cf6; }
   .card.pending { border-left-color: #ef4444; }
   .card.pending .value { color: #ef4444; }
-
-  /* Charts */
-  .charts-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    margin-bottom: 24px;
-  }
-  .chart-box {
-    background: white;
-    border-radius: 14px;
-    padding: 24px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-  }
-  .chart-box h3 {
-    font-size: 16px; font-weight: 700; color: #1f2937;
-    margin-bottom: 16px; padding-bottom: 12px;
-    border-bottom: 2px solid #f3f4f6;
-  }
-  .chart-container { position: relative; height: 320px; }
+  .card.done { border-left-color: #10b981; }
+  .card.done .value { color: #10b981; }
 
   /* Perspective Section */
   .perspective {
@@ -177,6 +202,7 @@
   .status-inprogress { background: #fef3c7; color: #92400e; }
   .status-pending { background: #fee2e2; color: #b91c1c; }
   .status-waiting { background: #e0f2fe; color: #075985; }
+  .status-done { background: #d1fae5; color: #065f46; }
 
   .result-text { font-size: 13px; color: #4b5563; white-space: pre-line; }
   .result-text strong { color: #1f2937; }
@@ -222,16 +248,20 @@
   .filter-btn:hover { border-color: #1e3c72; color: #1e3c72; }
   .filter-btn.active { background: #1e3c72; color: white; border-color: #1e3c72; }
 
+  .person-section { display: none; }
+  .person-section.active { display: block; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px);} to {opacity: 1; transform: translateY(0);} }
+
   @media (max-width: 900px) {
-    .charts-grid { grid-template-columns: 1fr; }
     .header { padding: 24px; }
     .header h1 { font-size: 22px; }
   }
 
   @media print {
     body { background: white; padding: 0; }
-    .card, .perspective, .chart-box, .header { box-shadow: none; }
-    .filter-bar { display: none; }
+    .card, .perspective, .header { box-shadow: none; }
+    .filter-bar, .person-tabs { display: none; }
+    .person-section { display: block !important; page-break-before: always; }
   }
 </style>
 </head>
@@ -240,104 +270,121 @@
 
   <!-- Header -->
   <div class="header">
-    <h1>📊 Dashboard สรุปการติดตามผลการดำเนินงานตาม KPI</h1>
-    <div class="subtitle">คุณสุจินดา ศรเกตุ — ประจำปี 2569</div>
+    <h1>Dashboard สรุปการติดตามผลการดำเนินงานตาม KPI</h1>
+    <div class="subtitle">ฝ่าย HRD — ประจำปี 2569</div>
     <div class="meta">
-      <span>📅 ข้อมูล ณ พฤษภาคม 2569</span>
-      <span>🎯 จำนวน KPI ทั้งหมด: 10 ข้อ</span>
-      <span>⚖️ น้ำหนักรวม: 100%</span>
+      <span>ข้อมูล ณ พฤษภาคม 2569</span>
+      <span>จำนวนพนักงาน: 2 คน</span>
     </div>
   </div>
 
-  <!-- Summary Cards -->
-  <div class="summary-grid">
-    <div class="card total">
-      <div class="label">KPI ทั้งหมด</div>
-      <div class="value">10</div>
-      <div class="detail">แบ่งเป็น 2 มุมมอง</div>
-    </div>
-    <div class="card partial">
-      <div class="label">ดำเนินการบางส่วน</div>
-      <div class="value">2</div>
-      <div class="detail">KPI 2, KPI 6 (33%)</div>
-    </div>
-    <div class="card inprogress">
-      <div class="label">กำลังดำเนินการ</div>
-      <div class="value">3</div>
-      <div class="detail">KPI 3, 4, 10</div>
-    </div>
-    <div class="card pending">
-      <div class="label">รอดำเนินการ / รอผล</div>
-      <div class="value">5</div>
-      <div class="detail">KPI 1, 5, 7, 8, 9</div>
-    </div>
+  <!-- Person Tabs -->
+  <div class="person-tabs">
+    <button class="person-tab active" data-person="sujinda">
+      <div class="avatar">สจ</div>
+      <div class="info">
+        <span class="name">สุจินดา ศรเกตุ</span>
+        <span class="role">10 KPI • น้ำหนัก 100%</span>
+      </div>
+    </button>
+    <button class="person-tab" data-person="kraat">
+      <div class="avatar">ขม</div>
+      <div class="info">
+        <span class="name">นางสาวเขมิกา บุญเลิศ (น้องกราส)</span>
+        <span class="role">HRD TRP • 9 KPI • น้ำหนัก 100%</span>
+      </div>
+    </button>
   </div>
 
-  <!-- Filter Bar -->
-  <div class="chart-box" style="margin-bottom: 24px;">
-    <h3>🔍 กรองตามสถานะ</h3>
-    <div class="filter-bar">
-      <button class="filter-btn active" data-filter="all">ทั้งหมด (10)</button>
-      <button class="filter-btn" data-filter="partial">ดำเนินการบางส่วน (2)</button>
-      <button class="filter-btn" data-filter="inprogress">กำลังดำเนินการ (3)</button>
-      <button class="filter-btn" data-filter="pending">รอดำเนินการ/รอผล (5)</button>
+  <!-- =========================== -->
+  <!-- Person 1: สุจินดา ศรเกตุ -->
+  <!-- =========================== -->
+  <div class="person-section active" id="person-sujinda">
+
+    <div class="summary-grid">
+      <div class="card total">
+        <div class="label">KPI ทั้งหมด</div>
+        <div class="value">10</div>
+        <div class="detail">แบ่งเป็น 2 มุมมอง</div>
+      </div>
+      <div class="card partial">
+        <div class="label">ดำเนินการบางส่วน</div>
+        <div class="value">2</div>
+        <div class="detail">KPI 2, KPI 6 (33%)</div>
+      </div>
+      <div class="card inprogress">
+        <div class="label">กำลังดำเนินการ</div>
+        <div class="value">3</div>
+        <div class="detail">KPI 3, 4, 10</div>
+      </div>
+      <div class="card pending">
+        <div class="label">รอดำเนินการ / รอผล</div>
+        <div class="value">5</div>
+        <div class="detail">KPI 1, 5, 7, 8, 9</div>
+      </div>
     </div>
-  </div>
 
-  <!-- Perspective 3: Internal Process -->
-  <div class="perspective">
-    <div class="perspective-title">
-      <span class="badge">มุมมองที่ 3</span>
-      Internal Process : มุมมองด้านกระบวนการ
+    <div class="perspective">
+      <h3 style="font-size:16px;font-weight:700;color:#1f2937;margin-bottom:12px;">กรองตามสถานะ</h3>
+      <div class="filter-bar" data-target="sujinda">
+        <button class="filter-btn active" data-filter="all">ทั้งหมด (10)</button>
+        <button class="filter-btn" data-filter="partial">ดำเนินการบางส่วน (2)</button>
+        <button class="filter-btn" data-filter="inprogress">กำลังดำเนินการ (3)</button>
+        <button class="filter-btn" data-filter="pending">รอดำเนินการ/รอผล (5)</button>
+      </div>
     </div>
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th style="width:40px;">#</th>
-            <th style="width:280px;">KPI / ตัวชี้วัด</th>
-            <th style="width:200px;">สูตร/วิธีคิด</th>
-            <th style="width:90px;">เป้าหมาย</th>
-            <th style="width:70px;">น้ำหนัก</th>
-            <th style="width:140px;" class="rating-cell">Rating</th>
-            <th>ผลการดำเนินการ</th>
-          </tr>
-        </thead>
-        <tbody id="kpiTable">
 
-          <tr data-status="pending">
-            <td><span class="kpi-no">1</span></td>
-            <td>ร้อยละของจำนวนพนักงาน TRP &amp; Dealership (ผจก ศูนย์ ผจก ขาย ผจก หลังบ้าน) เข้ารับการอบรม หรือเรียน E-Learning ตาม Training Roadmap ผ่านตามเกณฑ์ที่กำหนด ระดับผู้จัดการส่วนขึ้นไป</td>
-            <td>เฉลี่ยจำนวนพนักงานทั้งหมดได้รับการพัฒนา</td>
-            <td><span class="target">80% / 100%</span></td>
-            <td><span class="weight-badge">15</span></td>
-            <td class="rating-cell">
-              <div class="rating-row">
-                <div class="level">65</div><div class="level">70</div><div class="level">75</div><div class="level target">80</div><div class="level">85</div>
-              </div>
-              <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
-            </td>
-            <td>
-              <span class="status status-pending">รอดำเนินการ</span>
-              <div class="result-text"><strong>0 คน</strong></div>
-            </td>
-          </tr>
-
-          <tr data-status="partial">
-            <td><span class="kpi-no">2</span></td>
-            <td>ร้อยละการจัดพัฒนาตามแผนส่วนกลาง</td>
-            <td>คะแนนเฉลี่ยประเมินความพึงพอใจรายหลักสูตร</td>
-            <td><span class="target">100%</span></td>
-            <td><span class="weight-badge">10</span></td>
-            <td class="rating-cell">
-              <div class="rating-row">
-                <div class="level">80</div><div class="level">85</div><div class="level">90</div><div class="level">95</div><div class="level target">100</div>
-              </div>
-              <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
-            </td>
-            <td>
-              <span class="status status-partial">33% ดำเนินการแล้ว</span>
-              <div class="result-text"><strong>จัดอบรมแล้ว:</strong>
+    <div class="perspective">
+      <div class="perspective-title">
+        <span class="badge">มุมมองที่ 3</span>
+        Internal Process : มุมมองด้านกระบวนการ
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:40px;">#</th>
+              <th style="width:280px;">KPI / ตัวชี้วัด</th>
+              <th style="width:200px;">สูตร/วิธีคิด</th>
+              <th style="width:90px;">เป้าหมาย</th>
+              <th style="width:70px;">น้ำหนัก</th>
+              <th style="width:140px;" class="rating-cell">Rating</th>
+              <th>ผลการดำเนินการ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-status="pending">
+              <td><span class="kpi-no">1</span></td>
+              <td>ร้อยละของจำนวนพนักงาน TRP &amp; Dealership (ผจก ศูนย์ ผจก ขาย ผจก หลังบ้าน) เข้ารับการอบรม หรือเรียน E-Learning ตาม Training Roadmap ผ่านตามเกณฑ์ที่กำหนด ระดับผู้จัดการส่วนขึ้นไป</td>
+              <td>เฉลี่ยจำนวนพนักงานทั้งหมดได้รับการพัฒนา</td>
+              <td><span class="target">80% / 100%</span></td>
+              <td><span class="weight-badge">15</span></td>
+              <td class="rating-cell">
+                <div class="rating-row">
+                  <div class="level">65</div><div class="level">70</div><div class="level">75</div><div class="level target">80</div><div class="level">85</div>
+                </div>
+                <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
+              </td>
+              <td>
+                <span class="status status-pending">รอดำเนินการ</span>
+                <div class="result-text"><strong>0 คน</strong></div>
+              </td>
+            </tr>
+            <tr data-status="partial">
+              <td><span class="kpi-no">2</span></td>
+              <td>ร้อยละการจัดพัฒนาตามแผนส่วนกลาง</td>
+              <td>คะแนนเฉลี่ยประเมินความพึงพอใจรายหลักสูตร</td>
+              <td><span class="target">100%</span></td>
+              <td><span class="weight-badge">10</span></td>
+              <td class="rating-cell">
+                <div class="rating-row">
+                  <div class="level">80</div><div class="level">85</div><div class="level">90</div><div class="level">95</div><div class="level target">100</div>
+                </div>
+                <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
+              </td>
+              <td>
+                <span class="status status-partial">33% ดำเนินการแล้ว</span>
+                <div class="result-text"><strong>จัดอบรมแล้ว:</strong>
 1. Notebook LM Canva
 2. หลักสูตรการบริหารความเสี่ยง (ผจก.ฝ่าย)
 
@@ -346,79 +393,75 @@
 4. ทักษะผู้บริหารยุคใหม่ (TVP, TRP)
 5. อบรมดับเพลิง/ฝึกซ้อมหนีไฟ CPR
 6. Update ความรู้เรื่อง CAC</div>
-            </td>
-          </tr>
-
-          <tr data-status="inprogress">
-            <td><span class="kpi-no">3</span></td>
-            <td>Talent ของ TRP &amp; Dealership มีแผนพัฒนารายบุคคล และมีความก้าวหน้าในการพัฒนาตามแผน</td>
-            <td>คะแนน 3 = แผน 100% + ความก้าวหน้า ≥75%<br>คะแนน 4 = แผน 100% + ความก้าวหน้า ≥80%<br>คะแนน 5 = แผน 100% + ความก้าวหน้า ≥85%</td>
-            <td><span class="target">4 คะแนน</span></td>
-            <td><span class="weight-badge">10</span></td>
-            <td class="rating-cell">
-              <div class="rating-row">
-                <div class="level">-</div><div class="level">-</div><div class="level">3</div><div class="level target">4</div><div class="level">5</div>
-              </div>
-              <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
-            </td>
-            <td>
-              <span class="status status-inprogress">กำลังดำเนินการ</span>
-              <div class="result-text">1. ออกแบบระบบประเมิน ทบทวนความเป็น Talent</div>
-            </td>
-          </tr>
-
-          <tr data-status="inprogress">
-            <td><span class="kpi-no">4</span></td>
-            <td>มี Successor ของ TRP &amp; Dealership ครบในตำแหน่ง Key Roles &amp; Critical Positions (ขยับระดับความพร้อม Improve)</td>
-            <td>คะแนน 3 = แผน 100% + ความก้าวหน้า ≥75%<br>คะแนน 4 = แผน 100% + ความก้าวหน้า ≥80%<br>คะแนน 5 = แผน 100% + ความก้าวหน้า ≥85%</td>
-            <td><span class="target">4 คะแนน</span></td>
-            <td><span class="weight-badge">10</span></td>
-            <td class="rating-cell">
-              <div class="rating-row">
-                <div class="level">-</div><div class="level">-</div><div class="level">3</div><div class="level target">4</div><div class="level">5</div>
-              </div>
-              <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
-            </td>
-            <td>
-              <span class="status status-inprogress">กำลังดำเนินการ</span>
-              <div class="result-text">1. อยู่ระหว่าง CHRO ประเมิน Critical Position
+              </td>
+            </tr>
+            <tr data-status="inprogress">
+              <td><span class="kpi-no">3</span></td>
+              <td>Talent ของ TRP &amp; Dealership มีแผนพัฒนารายบุคคล และมีความก้าวหน้าในการพัฒนาตามแผน</td>
+              <td>คะแนน 3 = แผน 100% + ความก้าวหน้า ≥75%<br>คะแนน 4 = แผน 100% + ความก้าวหน้า ≥80%<br>คะแนน 5 = แผน 100% + ความก้าวหน้า ≥85%</td>
+              <td><span class="target">4 คะแนน</span></td>
+              <td><span class="weight-badge">10</span></td>
+              <td class="rating-cell">
+                <div class="rating-row">
+                  <div class="level">-</div><div class="level">-</div><div class="level">3</div><div class="level target">4</div><div class="level">5</div>
+                </div>
+                <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
+              </td>
+              <td>
+                <span class="status status-inprogress">กำลังดำเนินการ</span>
+                <div class="result-text">1. ออกแบบระบบประเมิน ทบทวนความเป็น Talent</div>
+              </td>
+            </tr>
+            <tr data-status="inprogress">
+              <td><span class="kpi-no">4</span></td>
+              <td>มี Successor ของ TRP &amp; Dealership ครบในตำแหน่ง Key Roles &amp; Critical Positions (ขยับระดับความพร้อม Improve)</td>
+              <td>คะแนน 3 = แผน 100% + ความก้าวหน้า ≥75%<br>คะแนน 4 = แผน 100% + ความก้าวหน้า ≥80%<br>คะแนน 5 = แผน 100% + ความก้าวหน้า ≥85%</td>
+              <td><span class="target">4 คะแนน</span></td>
+              <td><span class="weight-badge">10</span></td>
+              <td class="rating-cell">
+                <div class="rating-row">
+                  <div class="level">-</div><div class="level">-</div><div class="level">3</div><div class="level target">4</div><div class="level">5</div>
+                </div>
+                <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
+              </td>
+              <td>
+                <span class="status status-inprogress">กำลังดำเนินการ</span>
+                <div class="result-text">1. อยู่ระหว่าง CHRO ประเมิน Critical Position
 2. ออกแบบระบบประเมิน ทบทวนความเป็น Successor</div>
-            </td>
-          </tr>
-
-          <tr data-status="pending">
-            <td><span class="kpi-no">5</span></td>
-            <td>ร้อยละของการนำความรู้จากการพัฒนาไปปรับใช้จริง (Follow Up หลักสูตร Functional และ AI ที่ได้จัดในปี 69)</td>
-            <td>หัวหน้างานประเมิน เฉลี่ยความสามารถในการนำความรู้ไปประยุกต์ใช้จริง</td>
-            <td><span class="target">75%</span></td>
-            <td><span class="weight-badge">15</span></td>
-            <td class="rating-cell">
-              <div class="rating-row">
-                <div class="level">60</div><div class="level">65</div><div class="level">70</div><div class="level target">75</div><div class="level">80</div>
-              </div>
-              <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
-            </td>
-            <td>
-              <span class="status status-waiting">รอผล</span>
-              <div class="result-text">Follow Up เดือน <strong>ก.ค.</strong></div>
-            </td>
-          </tr>
-
-          <tr data-status="partial">
-            <td><span class="kpi-no">6</span></td>
-            <td>ร้อยละการจัดกิจกรรมตามแผน และร้อยละพนักงานมีส่วนร่วมในกิจกรรมส่งเสริม Engagement และวัฒนธรรมองค์กร (ความพึงพอใจ)</td>
-            <td>คะแนน 3 = แผน 100% + การมีส่วนร่วม ≥80%<br>คะแนน 4 = แผน 100% + การมีส่วนร่วม ≥85%<br>คะแนน 5 = แผน 100% + การมีส่วนร่วม ≥90%</td>
-            <td><span class="target">4 คะแนน</span></td>
-            <td><span class="weight-badge">10</span></td>
-            <td class="rating-cell">
-              <div class="rating-row">
-                <div class="level">-</div><div class="level">-</div><div class="level">3</div><div class="level target">4</div><div class="level">5</div>
-              </div>
-              <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
-            </td>
-            <td>
-              <span class="status status-partial">33% ดำเนินการแล้ว</span>
-              <div class="result-text"><strong>ดำเนินการแล้ว:</strong>
+              </td>
+            </tr>
+            <tr data-status="pending">
+              <td><span class="kpi-no">5</span></td>
+              <td>ร้อยละของการนำความรู้จากการพัฒนาไปปรับใช้จริง (Follow Up หลักสูตร Functional และ AI ที่ได้จัดในปี 69)</td>
+              <td>หัวหน้างานประเมิน เฉลี่ยความสามารถในการนำความรู้ไปประยุกต์ใช้จริง</td>
+              <td><span class="target">75%</span></td>
+              <td><span class="weight-badge">15</span></td>
+              <td class="rating-cell">
+                <div class="rating-row">
+                  <div class="level">60</div><div class="level">65</div><div class="level">70</div><div class="level target">75</div><div class="level">80</div>
+                </div>
+                <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
+              </td>
+              <td>
+                <span class="status status-waiting">รอผล</span>
+                <div class="result-text">Follow Up เดือน <strong>ก.ค.</strong></div>
+              </td>
+            </tr>
+            <tr data-status="partial">
+              <td><span class="kpi-no">6</span></td>
+              <td>ร้อยละการจัดกิจกรรมตามแผน และร้อยละพนักงานมีส่วนร่วมในกิจกรรมส่งเสริม Engagement และวัฒนธรรมองค์กร (ความพึงพอใจ)</td>
+              <td>คะแนน 3 = แผน 100% + การมีส่วนร่วม ≥80%<br>คะแนน 4 = แผน 100% + การมีส่วนร่วม ≥85%<br>คะแนน 5 = แผน 100% + การมีส่วนร่วม ≥90%</td>
+              <td><span class="target">4 คะแนน</span></td>
+              <td><span class="weight-badge">10</span></td>
+              <td class="rating-cell">
+                <div class="rating-row">
+                  <div class="level">-</div><div class="level">-</div><div class="level">3</div><div class="level target">4</div><div class="level">5</div>
+                </div>
+                <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
+              </td>
+              <td>
+                <span class="status status-partial">33% ดำเนินการแล้ว</span>
+                <div class="result-text"><strong>ดำเนินการแล้ว:</strong>
 1. New Year Party
 2. Town hall (TRP &amp; Dealership)
 3. กิจกรรมบริจาคโลหิต ครั้งที่ 1
@@ -430,133 +473,417 @@
 9. งานเกษียณอายุ
 
 <strong>ความพึงพอใจรวม: 91.93%</strong></div>
-            </td>
-          </tr>
+              </td>
+            </tr>
+            <tr data-status="pending">
+              <td><span class="kpi-no">7</span></td>
+              <td>ร้อยละคะแนน Test การรับรู้ Core Values องค์กร</td>
+              <td>คะแนน Test</td>
+              <td><span class="target">80%</span></td>
+              <td><span class="weight-badge">10</span></td>
+              <td class="rating-cell">
+                <div class="rating-row">
+                  <div class="level">65</div><div class="level">70</div><div class="level">75</div><div class="level target">80</div><div class="level">85</div>
+                </div>
+                <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
+              </td>
+              <td>
+                <span class="status status-waiting">รอผล</span>
+                <div class="result-text">Test เดือน <strong>กรกฎาคม</strong></div>
+              </td>
+            </tr>
+            <tr data-status="pending">
+              <td><span class="kpi-no">8</span></td>
+              <td>ร้อยละคะแนน Engagement Survey ประจำปี 2569 <strong>(พัฒนา)</strong> เฉลี่ยมากกว่าปี 68</td>
+              <td>ค่าคะแนน Engagement Survey ประจำปี 2569</td>
+              <td><span class="target">75%</span></td>
+              <td><span class="weight-badge">5</span></td>
+              <td class="rating-cell">
+                <div class="rating-row">
+                  <div class="level">67</div><div class="level">68</div><div class="level">69</div><div class="level target">70</div><div class="level">71</div>
+                </div>
+                <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
+              </td>
+              <td>
+                <span class="status status-waiting">รอผล</span>
+                <div class="result-text">รอผล <strong>ธ.ค.</strong></div>
+              </td>
+            </tr>
+            <tr data-status="pending">
+              <td><span class="kpi-no">9</span></td>
+              <td>ร้อยละคะแนน Engagement Survey ประจำปี 2569 <strong>(การสื่อสาร)</strong> เฉลี่ยมากกว่าปี 68</td>
+              <td>ค่าคะแนน Engagement Survey ประจำปี 2569</td>
+              <td><span class="target">75%</span></td>
+              <td><span class="weight-badge">5</span></td>
+              <td class="rating-cell">
+                <div class="rating-row">
+                  <div class="level">67</div><div class="level">68</div><div class="level">69</div><div class="level target">70</div><div class="level">71</div>
+                </div>
+                <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
+              </td>
+              <td>
+                <span class="status status-waiting">รอผล</span>
+                <div class="result-text">รอผล <strong>ธ.ค.</strong></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-          <tr data-status="pending">
-            <td><span class="kpi-no">7</span></td>
-            <td>ร้อยละคะแนน Test การรับรู้ Core Values องค์กร</td>
-            <td>คะแนน Test</td>
-            <td><span class="target">80%</span></td>
-            <td><span class="weight-badge">10</span></td>
-            <td class="rating-cell">
-              <div class="rating-row">
-                <div class="level">65</div><div class="level">70</div><div class="level">75</div><div class="level target">80</div><div class="level">85</div>
-              </div>
-              <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
-            </td>
-            <td>
-              <span class="status status-waiting">รอผล</span>
-              <div class="result-text">Test เดือน <strong>กรกฎาคม</strong></div>
-            </td>
-          </tr>
-
-          <tr data-status="pending">
-            <td><span class="kpi-no">8</span></td>
-            <td>ร้อยละคะแนน Engagement Survey ประจำปี 2569 <strong>(พัฒนา)</strong> เฉลี่ยมากกว่าปี 68</td>
-            <td>ค่าคะแนน Engagement Survey ประจำปี 2569</td>
-            <td><span class="target">75%</span></td>
-            <td><span class="weight-badge">5</span></td>
-            <td class="rating-cell">
-              <div class="rating-row">
-                <div class="level">67</div><div class="level">68</div><div class="level">69</div><div class="level target">70</div><div class="level">71</div>
-              </div>
-              <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
-            </td>
-            <td>
-              <span class="status status-waiting">รอผล</span>
-              <div class="result-text">รอผล <strong>ธ.ค.</strong></div>
-            </td>
-          </tr>
-
-          <tr data-status="pending">
-            <td><span class="kpi-no">9</span></td>
-            <td>ร้อยละคะแนน Engagement Survey ประจำปี 2569 <strong>(การสื่อสาร)</strong> เฉลี่ยมากกว่าปี 68</td>
-            <td>ค่าคะแนน Engagement Survey ประจำปี 2569</td>
-            <td><span class="target">75%</span></td>
-            <td><span class="weight-badge">5</span></td>
-            <td class="rating-cell">
-              <div class="rating-row">
-                <div class="level">67</div><div class="level">68</div><div class="level">69</div><div class="level target">70</div><div class="level">71</div>
-              </div>
-              <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
-            </td>
-            <td>
-              <span class="status status-waiting">รอผล</span>
-              <div class="result-text">รอผล <strong>ธ.ค.</strong></div>
-            </td>
-          </tr>
-
-        </tbody>
-      </table>
+    <div class="perspective">
+      <div class="perspective-title">
+        <span class="badge">มุมมองที่ 4</span>
+        Learning &amp; Development : มุมมองด้านเรียนรู้/พัฒนา
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:40px;">#</th>
+              <th style="width:280px;">KPI / ตัวชี้วัด</th>
+              <th style="width:200px;">สูตร/วิธีคิด</th>
+              <th style="width:90px;">เป้าหมาย</th>
+              <th style="width:70px;">น้ำหนัก</th>
+              <th style="width:140px;" class="rating-cell">Rating</th>
+              <th>ผลการดำเนินการ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-status="inprogress">
+              <td><span class="kpi-no">10</span></td>
+              <td>มีการพัฒนางานตนเองด้วย AI หรือระบบ Automation</td>
+              <td>คะแนน 3 = พัฒนาจริง 1 เรื่อง<br>คะแนน 4 = พัฒนาจริง 2 เรื่อง<br>คะแนน 5 = พัฒนาจริง 3 เรื่อง</td>
+              <td><span class="target">3 เรื่อง</span></td>
+              <td><span class="weight-badge">10</span></td>
+              <td class="rating-cell">
+                <div class="rating-row">
+                  <div class="level">-</div><div class="level">-</div><div class="level">1</div><div class="level">2</div><div class="level target">3</div>
+                </div>
+                <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
+              </td>
+              <td>
+                <span class="status status-inprogress">กำลังดำเนินการ</span>
+                <div class="result-text">อยู่ระหว่างการพัฒนา</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
+  <!-- End person-sujinda -->
 
-  <!-- Perspective 4: Learning & Development -->
-  <div class="perspective">
-    <div class="perspective-title">
-      <span class="badge">มุมมองที่ 4</span>
-      Learning &amp; Development : มุมมองด้านเรียนรู้/พัฒนา
+  <!-- =========================== -->
+  <!-- Person 2: นางสาวเขมิกา บุญเลิศ (น้องกราส) -->
+  <!-- =========================== -->
+  <div class="person-section" id="person-kraat">
+
+    <div class="summary-grid">
+      <div class="card total">
+        <div class="label">KPI ทั้งหมด</div>
+        <div class="value">9</div>
+        <div class="detail">แบ่งเป็น 2 มุมมอง</div>
+      </div>
+      <div class="card inprogress">
+        <div class="label">กำลังดำเนินการ</div>
+        <div class="value">5</div>
+        <div class="detail">KPI 1, 2, 3, 5, 6</div>
+      </div>
+      <div class="card pending">
+        <div class="label">รอดำเนินการ / รอผล</div>
+        <div class="value">4</div>
+        <div class="detail">KPI 4, 7, 8, 9</div>
+      </div>
+      <div class="card partial">
+        <div class="label">ความคืบหน้าเฉลี่ย</div>
+        <div class="value">33%</div>
+        <div class="detail">การจัดอบรม &amp; กิจกรรม</div>
+      </div>
     </div>
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th style="width:40px;">#</th>
-            <th style="width:280px;">KPI / ตัวชี้วัด</th>
-            <th style="width:200px;">สูตร/วิธีคิด</th>
-            <th style="width:90px;">เป้าหมาย</th>
-            <th style="width:70px;">น้ำหนัก</th>
-            <th style="width:140px;" class="rating-cell">Rating</th>
-            <th>ผลการดำเนินการ</th>
-          </tr>
-        </thead>
-        <tbody id="kpiTable2">
 
-          <tr data-status="inprogress">
-            <td><span class="kpi-no">10</span></td>
-            <td>มีการพัฒนางานตนเองด้วย AI หรือระบบ Automation</td>
-            <td>คะแนน 3 = พัฒนาจริง 1 เรื่อง<br>คะแนน 4 = พัฒนาจริง 2 เรื่อง<br>คะแนน 5 = พัฒนาจริง 3 เรื่อง</td>
-            <td><span class="target">3 เรื่อง</span></td>
-            <td><span class="weight-badge">10</span></td>
-            <td class="rating-cell">
-              <div class="rating-row">
-                <div class="level">-</div><div class="level">-</div><div class="level">1</div><div class="level">2</div><div class="level target">3</div>
-              </div>
-              <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
-            </td>
-            <td>
-              <span class="status status-inprogress">กำลังดำเนินการ</span>
-              <div class="result-text">อยู่ระหว่างการพัฒนา</div>
-            </td>
-          </tr>
+    <div class="perspective">
+      <h3 style="font-size:16px;font-weight:700;color:#1f2937;margin-bottom:12px;">กรองตามสถานะ</h3>
+      <div class="filter-bar" data-target="kraat">
+        <button class="filter-btn active" data-filter="all">ทั้งหมด (9)</button>
+        <button class="filter-btn" data-filter="inprogress">กำลังดำเนินการ (5)</button>
+        <button class="filter-btn" data-filter="pending">รอดำเนินการ/รอผล (4)</button>
+      </div>
+    </div>
 
-        </tbody>
-      </table>
+    <div class="perspective">
+      <div class="perspective-title">
+        <span class="badge">มุมมองที่ 3</span>
+        Internal Process : มุมมองด้านกระบวนการ (น้ำหนักรวม 90)
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:40px;">#</th>
+              <th style="width:280px;">KPI / ตัวชี้วัด</th>
+              <th style="width:220px;">สูตร/วิธีคิด</th>
+              <th style="width:100px;">เป้าหมาย</th>
+              <th style="width:70px;">น้ำหนัก</th>
+              <th style="width:80px;">ความถี่</th>
+              <th style="width:140px;" class="rating-cell">Rating</th>
+              <th>ผลการดำเนินการ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-status="inprogress">
+              <td><span class="kpi-no">1</span></td>
+              <td><strong>กรมพัฒนาฝีมือแรงงาน</strong> — จำนวนบริษัทที่มีอัตราการขอรับรองหลักสูตรต้องได้ 70% และการได้รับเงินอุดหนุนจากกรมพัฒนาฝีมือแรงงานคืน</td>
+              <td>ขอรับรองหลักสูตรต้องได้ 70% และการได้รับเงินอุดหนุนจากกรมพัฒนาฝีมือแรงงานคืน 2 บริษัท</td>
+              <td><span class="target">2 บริษัท</span></td>
+              <td><span class="weight-badge">15</span></td>
+              <td>รายปี</td>
+              <td class="rating-cell">
+                <div class="rating-row">
+                  <div class="level">-</div><div class="level">-</div><div class="level">1</div><div class="level target">2</div><div class="level">3</div>
+                </div>
+                <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
+              </td>
+              <td>
+                <span class="status status-inprogress">กำลังดำเนินการ</span>
+                <div class="result-text">เอกสารการขอรับรองหลักสูตร / รายงาน สท. 2 / Cert. จัดอบรมหนีไฟ TRP, TVP</div>
+              </td>
+            </tr>
+
+            <tr data-status="inprogress">
+              <td><span class="kpi-no">2</span></td>
+              <td><strong>การพัฒนาบุคลากรและสมรรถนะ (People Development)</strong> — ร้อยละของการจัดอบรมสำเร็จตามแผนประจำปี 2569</td>
+              <td>คิดเปอร์เซ็นต์จาก การจัดจริง / แผนที่ต้องจัด</td>
+              <td><span class="target">95%</span></td>
+              <td><span class="weight-badge">10</span></td>
+              <td>รายปี</td>
+              <td class="rating-cell">
+                <div class="rating-row">
+                  <div class="level">80</div><div class="level">85</div><div class="level">90</div><div class="level target">95</div><div class="level">100</div>
+                </div>
+                <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
+              </td>
+              <td>
+                <span class="status status-inprogress">กำลังดำเนินการ 33%</span>
+                <div class="result-text"><strong>จัดอบรมแล้ว:</strong>
+1. Notebook LM Canva
+2. หลักสูตรการบริหารความเสี่ยง (ผจก.ฝ่าย)
+
+<strong>รอดำเนินการ:</strong>
+3. Excel
+4. ทักษะผู้บริหารยุคใหม่ (TVP, TRP)
+5. อบรมดับเพลิง / ฝึกซ้อมหนีไฟ CPR
+6. Update ความรู้เรื่อง CAC</div>
+              </td>
+            </tr>
+
+            <tr data-status="inprogress">
+              <td><span class="kpi-no">3</span></td>
+              <td>ร้อยละของจำนวนพนักงาน TRP &amp; TVP (ฝ่ายขายอายุงาน 1 ปีขึ้นไป) เข้ารับการเรียน E-Learning ตาม Training Roadmap ผ่านเกณฑ์ที่กำหนด — ระดับพนักงาน</td>
+              <td>เฉลี่ยจำนวนพนักงานทั้งหมดได้รับการพัฒนา</td>
+              <td><span class="target">80%</span></td>
+              <td><span class="weight-badge">15</span></td>
+              <td>รายปี</td>
+              <td class="rating-cell">
+                <div class="rating-row">
+                  <div class="level">65</div><div class="level">70</div><div class="level">75</div><div class="level target">80</div><div class="level">85</div>
+                </div>
+                <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
+              </td>
+              <td>
+                <span class="status status-inprogress">กำลังดำเนินการ</span>
+                <div class="result-text"><strong>0 คน</strong></div>
+              </td>
+            </tr>
+
+            <tr data-status="pending">
+              <td><span class="kpi-no">4</span></td>
+              <td>ร้อยละของการนำความรู้จากการพัฒนาไปปรับใช้จริง</td>
+              <td>เฉลี่ยความสามารถในการนำความรู้ไปประยุกต์ใช้จริง</td>
+              <td><span class="target">75%</span></td>
+              <td><span class="weight-badge">10</span></td>
+              <td>รายปี</td>
+              <td class="rating-cell">
+                <div class="rating-row">
+                  <div class="level">60</div><div class="level">65</div><div class="level">70</div><div class="level target">75</div><div class="level">80</div>
+                </div>
+                <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
+              </td>
+              <td>
+                <span class="status status-waiting">รอดำเนินการ</span>
+                <div class="result-text">Follow Up เดือน <strong>ก.ค.</strong></div>
+              </td>
+            </tr>
+
+            <tr data-status="inprogress">
+              <td><span class="kpi-no">5</span></td>
+              <td><strong>การจัดกิจกรรมแรงงานสัมพันธ์ (Activity &amp; Engagement)</strong> — ร้อยละกิจกรรมที่ดำเนินการแล้วเสร็จตามแผนประจำปี 2569 / กิจกรรมสร้างวัฒนธรรมองค์กร Core Values</td>
+              <td>คิดเปอร์เซ็นต์จาก การจัดจริง / แผนที่ต้องจัด</td>
+              <td><span class="target">95%</span></td>
+              <td><span class="weight-badge">10</span></td>
+              <td>รายปี</td>
+              <td class="rating-cell">
+                <div class="rating-row">
+                  <div class="level">80</div><div class="level">85</div><div class="level">90</div><div class="level target">95</div><div class="level">100</div>
+                </div>
+                <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
+              </td>
+              <td>
+                <span class="status status-inprogress">กำลังดำเนินการ 33%</span>
+                <div class="result-text"><strong>ดำเนินการจัดแล้ว:</strong>
+1. New Year Party
+2. Town hall (TRP &amp; Dealership)
+3. กิจกรรมบริจาคโลหิต ครั้งที่ 1
+
+<strong>รอดำเนินการตามแผน:</strong>
+4. ประกาศเกียรติคุณ 5 ปี ทุนบุตรพนักงาน (TRP &amp; TVP)
+5. ประกาศเกียรติคุณ อายุงาน 10 ปี (TRP &amp; TVP)
+6-8. กิจกรรมบริจาคโลหิต ครั้งที่ 2
+9. งานเกษียณอายุ</div>
+              </td>
+            </tr>
+
+            <tr data-status="inprogress">
+              <td><span class="kpi-no">6</span></td>
+              <td><strong>จำนวนยอดรวมของถุงเลือด</strong> กิจกรรมบริจาคโลหิต</td>
+              <td>จำนวนยอดรวมของถุงเลือดในการบริจาคประจำปี 2569 (รายงานจาก รพ.ศิริราช)</td>
+              <td><span class="target">400 ถุง</span></td>
+              <td><span class="weight-badge">5</span></td>
+              <td>รายปี</td>
+              <td class="rating-cell">
+                <div class="rating-row">
+                  <div class="level">250</div><div class="level">300</div><div class="level">350</div><div class="level target">400</div><div class="level">450</div>
+                </div>
+                <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
+              </td>
+              <td>
+                <span class="status status-inprogress">กำลังดำเนินการ</span>
+                <div class="result-text"><strong>56 ถุง</strong> (14% ของเป้าหมาย)</div>
+              </td>
+            </tr>
+
+            <tr data-status="pending">
+              <td><span class="kpi-no">7</span></td>
+              <td>ร้อยละคะแนน Engagement Survey ประจำปี 2569 — ดึงคะแนนที่เกี่ยวกับ HRD เฉลี่ยมากกว่าปี 68</td>
+              <td>ค่าคะแนน Engagement Survey ประจำปี 2569 (ความพึงพอใจในการให้บริการของ HRD)</td>
+              <td><span class="target">81.36%</span></td>
+              <td><span class="weight-badge">5</span></td>
+              <td>รายปี</td>
+              <td class="rating-cell">
+                <div class="rating-row">
+                  <div class="level">78</div><div class="level">79</div><div class="level">80</div><div class="level target">81</div><div class="level">82</div>
+                </div>
+                <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
+              </td>
+              <td>
+                <span class="status status-waiting">รอผล</span>
+                <div class="result-text">รอผล <strong>ธ.ค.</strong></div>
+              </td>
+            </tr>
+
+            <tr data-status="pending">
+              <td><span class="kpi-no">8</span></td>
+              <td>ร้อยละคะแนน Test การรับรู้ Core Values องค์กร</td>
+              <td>คะแนน Test การรับรู้ Core Values</td>
+              <td><span class="target">80%</span></td>
+              <td><span class="weight-badge">5</span></td>
+              <td>รายปี</td>
+              <td class="rating-cell">
+                <div class="rating-row">
+                  <div class="level">65</div><div class="level">70</div><div class="level">75</div><div class="level target">80</div><div class="level">85</div>
+                </div>
+                <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
+              </td>
+              <td>
+                <span class="status status-waiting">รอดำเนินการ</span>
+                <div class="result-text">Test เดือน <strong>กรกฎาคม</strong></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="perspective">
+      <div class="perspective-title">
+        <span class="badge">มุมมองที่ 4</span>
+        Learning &amp; Development : มุมมองด้านเรียนรู้/พัฒนา (น้ำหนักรวม 10)
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:40px;">#</th>
+              <th style="width:280px;">KPI / ตัวชี้วัด</th>
+              <th style="width:220px;">สูตร/วิธีคิด</th>
+              <th style="width:100px;">เป้าหมาย</th>
+              <th style="width:70px;">น้ำหนัก</th>
+              <th style="width:80px;">ความถี่</th>
+              <th style="width:140px;" class="rating-cell">Rating</th>
+              <th>ผลการดำเนินการ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-status="pending">
+              <td><span class="kpi-no">9</span></td>
+              <td><strong>พัฒนางาน</strong> — มีการพัฒนางานตนเองด้วย AI หรือระบบ Automation</td>
+              <td>คะแนน 3 = มีไอเดีย<br>คะแนน 4 = มีแผนพัฒนางาน<br>คะแนน 5 = พัฒนาสำเร็จ</td>
+              <td><span class="target">1 เรื่อง</span></td>
+              <td><span class="weight-badge">10</span></td>
+              <td>รายปี</td>
+              <td class="rating-cell">
+                <div class="rating-row">
+                  <div class="level">-</div><div class="level">-</div><div class="level target">3</div><div class="level">4</div><div class="level">5</div>
+                </div>
+                <small style="color:#9ca3af;font-size:11px;">ระดับ 1–5</small>
+              </td>
+              <td>
+                <span class="status status-waiting">รอดำเนินการ</span>
+                <div class="result-text">รอผล <strong>ธ.ค.</strong></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
+  <!-- End person-kraat -->
 
   <!-- Footer -->
   <div class="footer">
-    📋 รายงานสรุปการติดตามผลการดำเนินงานตาม KPI ประจำปี 2569 — คุณสุจินดา ศรเกตุ<br>
+    รายงานสรุปการติดตามผลการดำเนินงานตาม KPI ประจำปี 2569<br>
     <small>สร้าง ณ วันที่ 19 พฤษภาคม 2569</small>
   </div>
 
 </div>
 
 <script>
-  // Filter buttons
-  document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  // Person tab switching
+  document.querySelectorAll('.person-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.person-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.person-section').forEach(s => s.classList.remove('active'));
       this.classList.add('active');
-      const filter = this.dataset.filter;
-      document.querySelectorAll('tbody tr').forEach(row => {
-        if (filter === 'all' || row.dataset.status === filter) {
-          row.style.display = '';
-        } else {
-          row.style.display = 'none';
-        }
+      document.getElementById('person-' + this.dataset.person).classList.add('active');
+    });
+  });
+
+  // Filter buttons (scoped per person section)
+  document.querySelectorAll('.filter-bar').forEach(bar => {
+    const target = bar.dataset.target;
+    bar.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        bar.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        const filter = this.dataset.filter;
+        const section = document.getElementById('person-' + target);
+        section.querySelectorAll('tbody tr').forEach(row => {
+          if (filter === 'all' || row.dataset.status === filter) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        });
       });
     });
   });
